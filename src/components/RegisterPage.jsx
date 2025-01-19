@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-// Create a new file RegisterPage.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -12,62 +11,6 @@ const RegisterPage = () => {
   });
   const [apiMessage, setApiMessage] = useState({ text: '', type: '' });
   const [isLoading, setIsLoading] = useState(false);
-
-  const formContainerStyle = {
-    backgroundColor: 'white',
-    padding: '2rem',
-    border: '2px solid #8a3aff',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    width: '90%',
-    maxWidth: '400px',
-    position: 'absolute',
-    top: '55%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-  };
-
-  const logoStyle = {
-    width: '200px',
-    height: 'auto',
-    display: 'block',
-    margin: '0 auto 2rem',
-  };
-
-  const inputStyle = {
-    width: '90%',
-    padding: '0.75rem',
-    marginBottom: '1rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    fontSize: '1rem',
-  };
-
-  const buttonStyle = (isDisabled) => ({
-    width: '98%',
-    padding: '0.75rem',
-    backgroundColor: isDisabled ? '#cccccc' : '#8a3aff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    cursor: isDisabled ? 'not-allowed' : 'pointer',
-    marginBottom: '1rem',
-  });
-
-  const linkStyle = {
-    color: '#8a3aff',
-    textDecoration: 'underline',
-  };
-
-  const messageStyle = (type) => ({
-    padding: '10px',
-    marginBottom: '1rem',
-    borderRadius: '4px',
-    textAlign: 'center',
-    backgroundColor: type === 'error' ? '#ffe6e6' : '#e6ffe6',
-    color: type === 'error' ? '#ff0000' : '#008000',
-  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,7 +50,6 @@ const RegisterPage = () => {
       });
 
       if (data.status === 'ok') {
-        // Add your success logic here
         console.log('Registration successful:', data);
       }
     } catch (error) {
@@ -137,77 +79,139 @@ const RegisterPage = () => {
     isPasswordMatch;
 
   return (
-    <div style={formContainerStyle}>
-      <img
-        src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
-        alt='Logo'
-        style={logoStyle}
-      />
-
-      {apiMessage.text && (
-        <div style={messageStyle(apiMessage.type)}>{apiMessage.text}</div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          name='name'
-          placeholder='Full Name'
-          style={inputStyle}
-          value={formData.name}
-          onChange={handleInputChange}
-          required
+    <div className='flex flex-col justify-center min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8'>
+      <div className='sm:mx-auto sm:w-full sm:max-w-md'>
+        <img
+          src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
+          alt='Logo'
+          className='w-32 h-auto mx-auto'
         />
-
-        <input
-          type='email'
-          name='email'
-          placeholder='Email'
-          style={inputStyle}
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-        />
-
-        <input
-          type='password'
-          name='password'
-          placeholder='Password'
-          style={inputStyle}
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-        />
-
-        <input
-          type='password'
-          name='confirmPassword'
-          placeholder='Confirm Password'
-          style={inputStyle}
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-          required
-        />
-
-        {formData.confirmPassword && !isPasswordMatch && (
-          <div style={messageStyle('error')}>Passwords do not match</div>
-        )}
-
-        <button
-          type='submit'
-          style={buttonStyle(isLoading || !isFormValid)}
-          disabled={isLoading || !isFormValid}
-        >
-          {isLoading ? 'Processing...' : 'Sign Up'}
-        </button>
-
-        <p style={{ textAlign: 'center' }}>
+        <h2 className='mt-6 text-3xl font-extrabold text-center text-gray-900'>
+          Create your account
+        </h2>
+        <p className='mt-2 text-sm text-center text-gray-600'>
           Already have an account?{' '}
-          <Link to='/login' style={linkStyle}>
+          <Link
+            to='/login'
+            className='font-medium text-indigo-600 hover:text-indigo-500'
+          >
             Login
           </Link>
         </p>
-      </form>
+      </div>
+
+      <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
+        <div className='px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10'>
+          {apiMessage.text && (
+            <div
+              className={`mb-4 px-4 py-2 rounded text-center ${
+                apiMessage.type === 'error'
+                  ? 'bg-red-100 text-red-600'
+                  : 'bg-green-100 text-green-600'
+              }`}
+            >
+              {apiMessage.text}
+            </div>
+          )}
+
+          <form className='space-y-6' onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor='name'
+                className='block text-sm font-medium text-gray-700'
+              >
+                Full Name
+              </label>
+              <div className='mt-1'>
+                <input
+                  id='name'
+                  name='name'
+                  type='text'
+                  required
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor='email'
+                className='block text-sm font-medium text-gray-700'
+              >
+                Email Address
+              </label>
+              <div className='mt-1'>
+                <input
+                  id='email'
+                  name='email'
+                  type='email'
+                  required
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor='password'
+                className='block text-sm font-medium text-gray-700'
+              >
+                Password
+              </label>
+              <div className='mt-1'>
+                <input
+                  id='password'
+                  name='password'
+                  type='password'
+                  required
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor='confirmPassword'
+                className='block text-sm font-medium text-gray-700'
+              >
+                Confirm Password
+              </label>
+              <div className='mt-1'>
+                <input
+                  id='confirmPassword'
+                  name='confirmPassword'
+                  type='password'
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                />
+              </div>
+              {!isPasswordMatch && formData.confirmPassword && (
+                <p className='mt-2 text-sm text-red-600'>
+                  Passwords do not match
+                </p>
+              )}
+            </div>
+
+            <div>
+              <button
+                type='submit'
+                disabled={isLoading || !isFormValid}
+                className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50'
+              >
+                {isLoading ? 'Processing...' : 'Sign Up'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
