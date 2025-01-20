@@ -23,9 +23,9 @@ const DashboardLayout = ({ children }) => {
       <div className='w-64 bg-white shadow-lg'>
         <div className='flex items-center justify-center h-16 border-b'>
           <img
-            src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
+            src='http://sarihorganics.com/wp-content/uploads/2025/01/wide-logo-png.png'
             alt='Logo'
-            className='h-8'
+            className='w-auto h-12'
           />
         </div>
         <nav className='mt-6'>
