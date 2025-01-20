@@ -44,7 +44,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8'>
+    <div className='flex flex-col justify-between min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8'>
       <div className='sm:mx-auto sm:w-full sm:max-w-md'>
         <div className='flex justify-center'>
           <img
@@ -66,7 +66,6 @@ const LoginPage = () => {
           </Link>
         </p>
       </div>
-
       <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
         <div className='px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10'>
           {apiMessage.text && (
@@ -136,6 +135,24 @@ const LoginPage = () => {
           </form>
         </div>
       </div>
+      {/* Footer */}
+      <footer className='mt-8 text-sm text-center text-gray-600'>
+        <p>© {new Date().getFullYear()} OBAM AI All rights reserved.</p>
+        <div className='space-x-4'>
+          <Link
+            to='/privacy-policy'
+            className='text-purple-600 hover:text-purple-500'
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            to='/terms-of-service'
+            className='text-purple-600 hover:text-purple-500'
+          >
+            Terms of Service
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 };

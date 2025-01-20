@@ -42,7 +42,6 @@ const RegisterPage = () => {
       });
 
       if (response.status === 'ok') {
-        // Show success message for a moment before redirecting
         setTimeout(() => {
           navigate('/login');
         }, 2000);
@@ -74,7 +73,7 @@ const RegisterPage = () => {
     isPasswordMatch;
 
   return (
-    <div className='flex items-center justify-center h-screen bg-gray-50'>
+    <div className='flex flex-col items-center justify-center h-screen bg-gray-50'>
       <div className='w-full max-w-md px-4'>
         <div className='mb-6 text-center'>
           <img
@@ -178,7 +177,11 @@ const RegisterPage = () => {
                 required
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className='mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+                className={`mt-1 block w-full px-3 py-1.5 border rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 ${
+                  !isPasswordMatch && formData.confirmPassword
+                    ? 'border-red-500'
+                    : 'border-gray-300'
+                }`}
               />
               {!isPasswordMatch && formData.confirmPassword && (
                 <p className='mt-1 text-xs text-red-600'>
@@ -197,6 +200,25 @@ const RegisterPage = () => {
           </form>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className='mt-8 text-sm text-center text-gray-600'>
+        <p>© {new Date().getFullYear()} OBAM AI All rights reserved.</p>
+        <div className='space-x-4'>
+          <Link
+            to='/privacy-policy'
+            className='text-purple-600 hover:text-purple-500'
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            to='/terms-of-service'
+            className='text-purple-600 hover:text-purple-500'
+          >
+            Terms of Service
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 };
