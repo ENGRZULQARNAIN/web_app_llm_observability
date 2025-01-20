@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
+import Footer from './Footer';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -77,7 +78,7 @@ const RegisterPage = () => {
       <div className='w-full max-w-md px-4'>
         <div className='mb-6 text-center'>
           <img
-            src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
+            src='http://sarihorganics.com/wp-content/uploads/2025/01/wide-logo-png.png'
             alt='Logo'
             className='w-24 h-auto mx-auto'
           />
@@ -88,7 +89,7 @@ const RegisterPage = () => {
             Already have an account?{' '}
             <Link
               to='/login'
-              className='font-medium text-purple-600 hover:text-purple-500'
+              className='font-bold text-purple-600 hover:text-purple-500'
             >
               Login
             </Link>
@@ -201,24 +202,8 @@ const RegisterPage = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className='mt-8 text-sm text-center text-gray-600'>
-        <p>© {new Date().getFullYear()} OBAM AI All rights reserved.</p>
-        <div className='space-x-4'>
-          <Link
-            to='/privacy-policy'
-            className='text-purple-600 hover:text-purple-500'
-          >
-            Privacy Policy
-          </Link>
-          <Link
-            to='/terms-of-service'
-            className='text-purple-600 hover:text-purple-500'
-          >
-            Terms of Service
-          </Link>
-        </div>
-      </footer>
+      {/* Dynamic Footer */}
+      <Footer />
     </div>
   );
 };
