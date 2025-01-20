@@ -17,7 +17,7 @@ const Footer = () => {
         }
       } catch (error) {
         console.error('Error fetching the message:', error);
-        setMessage('OBAM AI All rights reserved.'); // Fallback message
+        setMessage('OBAM AI All rights reserved.');
       }
     };
 

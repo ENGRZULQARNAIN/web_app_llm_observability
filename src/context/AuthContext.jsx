@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await api.login(credentials);
-      if (response.status === 'success') {
+      if (response.status === 'ok') {
         localStorage.setItem('authToken', response.token);
         setUser({ token: response.token });
         return { success: true };
