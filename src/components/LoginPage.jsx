@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [apiMessage, setApiMessage] = useState({ text: '', type: '' });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,36 +16,21 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        'http://fypobservabillity-env.eba-una3djfn.us-east-1.elasticbeanstalk.com/login/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            accept: 'application/json',
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const result = await login(formData);
 
-      const data = await response.json();
-
-      setApiMessage({
-        text: data.message,
-        type: data.status === 'success' ? 'success' : 'error',
-      });
-
-      if (data.status === 'success') {
-        // Save token or perform other actions
-        console.log('Login successful:', data);
+      if (result.success) {
         navigate('/dashboard');
+      } else {
+        setApiMessage({
+          text: result.message || 'Login failed',
+          type: 'error',
+        });
       }
     } catch (error) {
       setApiMessage({
         text: 'An error occurred. Please try again.',
         type: 'error',
       });
-      console.error('API Error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +60,7 @@ const LoginPage = () => {
           Or{' '}
           <Link
             to='/register'
-            className='font-medium text-indigo-600 hover:text-indigo-500'
+            className='font-medium text-purple-600 hover:text-purple-500'
           >
             create a new account
           </Link>
@@ -111,7 +98,7 @@ const LoginPage = () => {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-purple-500 focus:border-purple-500'
                 />
               </div>
             </div>
@@ -132,7 +119,7 @@ const LoginPage = () => {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-purple-500 focus:border-purple-500'
                 />
               </div>
             </div>
@@ -141,7 +128,7 @@ const LoginPage = () => {
               <button
                 type='submit'
                 disabled={isLoading}
-                className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50'
+                className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50'
               >
                 {isLoading ? 'Processing...' : 'Sign in'}
               </button>

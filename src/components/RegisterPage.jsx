@@ -1,6 +1,9 @@
-/* eslint-disable no-unused-vars */
+{
+  /* eslint-disable no-unused-vars */
+}
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { api } from '../services/api';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +14,7 @@ const RegisterPage = () => {
   });
   const [apiMessage, setApiMessage] = useState({ text: '', type: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,31 +30,22 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        'http://fypobservabillity-env.eba-una3djfn.us-east-1.elasticbeanstalk.com/register/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            accept: 'application/json',
-          },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            password: formData.password,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      setApiMessage({
-        text: data.message,
-        type: data.status === 'ok' ? 'success' : 'error',
+      const response = await api.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
       });
 
-      if (data.status === 'ok') {
-        console.log('Registration successful:', data);
+      setApiMessage({
+        text: response.message,
+        type: response.status === 'ok' ? 'success' : 'error',
+      });
+
+      if (response.status === 'ok') {
+        // Show success message for a moment before redirecting
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       }
     } catch (error) {
       setApiMessage({
@@ -79,32 +74,32 @@ const RegisterPage = () => {
     isPasswordMatch;
 
   return (
-    <div className='flex flex-col justify-center min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8'>
-      <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-        <img
-          src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
-          alt='Logo'
-          className='w-32 h-auto mx-auto'
-        />
-        <h2 className='mt-6 text-3xl font-extrabold text-center text-gray-900'>
-          Create your account
-        </h2>
-        <p className='mt-2 text-sm text-center text-gray-600'>
-          Already have an account?{' '}
-          <Link
-            to='/login'
-            className='font-medium text-indigo-600 hover:text-indigo-500'
-          >
-            Login
-          </Link>
-        </p>
-      </div>
+    <div className='flex items-center justify-center h-screen bg-gray-50'>
+      <div className='w-full max-w-md px-4'>
+        <div className='mb-6 text-center'>
+          <img
+            src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
+            alt='Logo'
+            className='w-24 h-auto mx-auto'
+          />
+          <h2 className='mt-4 text-2xl font-bold text-gray-900'>
+            Create your account
+          </h2>
+          <p className='mt-1 text-sm text-gray-600'>
+            Already have an account?{' '}
+            <Link
+              to='/login'
+              className='font-medium text-purple-600 hover:text-purple-500'
+            >
+              Login
+            </Link>
+          </p>
+        </div>
 
-      <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
-        <div className='px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10'>
+        <div className='p-6 bg-white rounded-lg shadow'>
           {apiMessage.text && (
             <div
-              className={`mb-4 px-4 py-2 rounded text-center ${
+              className={`mb-4 px-3 py-2 rounded text-center text-sm ${
                 apiMessage.type === 'error'
                   ? 'bg-red-100 text-red-600'
                   : 'bg-green-100 text-green-600'
@@ -114,7 +109,7 @@ const RegisterPage = () => {
             </div>
           )}
 
-          <form className='space-y-6' onSubmit={handleSubmit}>
+          <form className='space-y-4' onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor='name'
@@ -122,17 +117,15 @@ const RegisterPage = () => {
               >
                 Full Name
               </label>
-              <div className='mt-1'>
-                <input
-                  id='name'
-                  name='name'
-                  type='text'
-                  required
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-                />
-              </div>
+              <input
+                id='name'
+                name='name'
+                type='text'
+                required
+                value={formData.name}
+                onChange={handleInputChange}
+                className='mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+              />
             </div>
 
             <div>
@@ -142,17 +135,15 @@ const RegisterPage = () => {
               >
                 Email Address
               </label>
-              <div className='mt-1'>
-                <input
-                  id='email'
-                  name='email'
-                  type='email'
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-                />
-              </div>
+              <input
+                id='email'
+                name='email'
+                type='email'
+                required
+                value={formData.email}
+                onChange={handleInputChange}
+                className='mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+              />
             </div>
 
             <div>
@@ -162,17 +153,15 @@ const RegisterPage = () => {
               >
                 Password
               </label>
-              <div className='mt-1'>
-                <input
-                  id='password'
-                  name='password'
-                  type='password'
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-                />
-              </div>
+              <input
+                id='password'
+                name='password'
+                type='password'
+                required
+                value={formData.password}
+                onChange={handleInputChange}
+                className='mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+              />
             </div>
 
             <div>
@@ -182,33 +171,29 @@ const RegisterPage = () => {
               >
                 Confirm Password
               </label>
-              <div className='mt-1'>
-                <input
-                  id='confirmPassword'
-                  name='confirmPassword'
-                  type='password'
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  className='block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-                />
-              </div>
+              <input
+                id='confirmPassword'
+                name='confirmPassword'
+                type='password'
+                required
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className='mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500'
+              />
               {!isPasswordMatch && formData.confirmPassword && (
-                <p className='mt-2 text-sm text-red-600'>
+                <p className='mt-1 text-xs text-red-600'>
                   Passwords do not match
                 </p>
               )}
             </div>
 
-            <div>
-              <button
-                type='submit'
-                disabled={isLoading || !isFormValid}
-                className='flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50'
-              >
-                {isLoading ? 'Processing...' : 'Sign Up'}
-              </button>
-            </div>
+            <button
+              type='submit'
+              disabled={isLoading || !isFormValid}
+              className='w-full px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50'
+            >
+              {isLoading ? 'Processing...' : 'Sign Up'}
+            </button>
           </form>
         </div>
       </div>

@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-// import './styles.css';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,62 +11,6 @@ const AuthPage = () => {
   });
   const [apiMessage, setApiMessage] = useState({ text: '', type: '' });
   const [isLoading, setIsLoading] = useState(false);
-
-  const formContainerStyle = {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    width: '90%',
-    maxWidth: '400px',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-  };
-
-  const logoStyle = {
-    width: '200px',
-    height: 'auto',
-    display: 'block',
-    margin: '0 auto 2rem',
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '0.75rem',
-    marginBottom: '1rem',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    fontSize: '1rem',
-  };
-
-  const buttonStyle = (isDisabled) => ({
-    width: '100%',
-    padding: '0.75rem',
-    backgroundColor: isDisabled ? '#cccccc' : '#8a3aff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '1rem',
-    cursor: isDisabled ? 'not-allowed' : 'pointer',
-    marginBottom: '1rem',
-  });
-
-  const linkStyle = {
-    color: '#8a3aff',
-    textDecoration: 'underline',
-    cursor: 'pointer',
-  };
-
-  const messageStyle = (type) => ({
-    padding: '10px',
-    marginBottom: '1rem',
-    borderRadius: '4px',
-    textAlign: 'center',
-    backgroundColor: type === 'error' ? '#ffe6e6' : '#e6ffe6',
-    color: type === 'error' ? '#ff0000' : '#008000',
-  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,7 +44,6 @@ const AuthPage = () => {
 
       const data = await response.json();
 
-      // Handle signup success case separately
       if (!isLogin && data.status === 'ok') {
         setApiMessage({
           text: data.message,
@@ -118,7 +60,6 @@ const AuthPage = () => {
       }
 
       if (data.status === 'success' || data.status === 'ok') {
-        // Add your success logic here (e.g., redirect, store token, etc.)
         console.log('Operation successful:', data);
       }
     } catch (error) {
@@ -145,7 +86,6 @@ const AuthPage = () => {
     setFormData({ name: '', email: '', password: '', confirmPassword: '' });
   };
 
-  // Validate password match for signup
   const isPasswordMatch =
     isLogin || formData.password === formData.confirmPassword;
   const isFormValid = isLogin
@@ -157,82 +97,100 @@ const AuthPage = () => {
       isPasswordMatch;
 
   return (
-    <div style={formContainerStyle}>
-      <img
-        src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
-        alt='Logo'
-        style={logoStyle}
-      />
-
-      {apiMessage.text && (
-        <div style={messageStyle(apiMessage.type)}>{apiMessage.text}</div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        {!isLogin && (
-          <input
-            type='text'
-            name='name'
-            placeholder='Full Name'
-            style={inputStyle}
-            value={formData.name}
-            onChange={handleInputChange}
-            required
-          />
+    <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+      <div className='w-full max-w-md p-8 bg-white rounded-lg shadow-md'>
+        <img
+          src='https://sarihorganics.com/wp-content/uploads/2024/12/Purple_and_White_Modern_AI_Technology_Logo-removebg.png'
+          alt='Logo'
+          className='w-40 h-auto mb-6 mr-auto'
+        />
+        {apiMessage.text && (
+          <div
+            className={`p-4 mb-4 text-center rounded-lg text-sm font-medium ${
+              apiMessage.type === 'error'
+                ? 'bg-red-100 text-red-700 border border-red-300'
+                : 'bg-green-100 text-green-700 border border-green-300'
+            }`}
+          >
+            {apiMessage.text}
+          </div>
         )}
 
-        <input
-          type='email'
-          name='email'
-          placeholder='Email'
-          style={inputStyle}
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-        />
-
-        <input
-          type='password'
-          name='password'
-          placeholder='Password'
-          style={inputStyle}
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-        />
-
-        {!isLogin && (
-          <>
+        <form onSubmit={handleSubmit}>
+          {!isLogin && (
             <input
-              type='password'
-              name='confirmPassword'
-              placeholder='Confirm Password'
-              style={inputStyle}
-              value={formData.confirmPassword}
+              type='text'
+              name='name'
+              placeholder='Full Name'
+              className='w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500'
+              value={formData.name}
               onChange={handleInputChange}
               required
             />
-            {formData.confirmPassword && !isPasswordMatch && (
-              <div style={messageStyle('error')}>Passwords do not match</div>
-            )}
-          </>
-        )}
+          )}
 
-        <button
-          type='submit'
-          style={buttonStyle(isLoading || !isFormValid)}
-          disabled={isLoading || !isFormValid}
-        >
-          {isLoading ? 'Processing...' : isLogin ? 'Login' : 'Sign Up'}
-        </button>
+          <input
+            type='email'
+            name='email'
+            placeholder='Email'
+            className='w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500'
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
 
-        <p style={{ textAlign: 'center' }}>
-          {isLogin ? "Don't have an account? " : 'Already have an account? '}
-          <span style={linkStyle} onClick={handleModeSwitch}>
-            {isLogin ? 'Sign Up' : 'Login'}
-          </span>
-        </p>
-      </form>
+          <input
+            type='password'
+            name='password'
+            placeholder='Password'
+            className='w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500'
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+
+          {!isLogin && (
+            <>
+              <input
+                type='password'
+                name='confirmPassword'
+                placeholder='Confirm Password'
+                className='w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500'
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                required
+              />
+              {formData.confirmPassword && !isPasswordMatch && (
+                <div className='mb-4 text-sm text-red-600'>
+                  Passwords do not match
+                </div>
+              )}
+            </>
+          )}
+
+          <button
+            type='submit'
+            className={`w-full p-3 text-white rounded-lg text-lg font-medium ${
+              isLoading || !isFormValid
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-purple-500 hover:bg-purple-600'
+            }`}
+            disabled={isLoading || !isFormValid}
+          >
+            {isLoading ? 'Processing...' : isLogin ? 'Login' : 'Sign Up'}
+          </button>
+
+          <p className='mt-4 text-sm text-center'>
+            {isLogin ? "Don't have an account? " : 'Already have an account? '}
+            <span
+              className='text-purple-500 underline cursor-pointer hover:text-purple-600'
+              onClick={handleModeSwitch}
+            >
+              {isLogin ? 'Sign Up' : 'Login'}
+            </span>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
