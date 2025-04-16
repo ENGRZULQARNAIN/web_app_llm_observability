@@ -9,7 +9,7 @@ const Footer = () => {
     const fetchMessage = async () => {
       try {
         const response = await fetch(
-          'http://fypobservabillity-env.eba-una3djfn.us-east-1.elasticbeanstalk.com'
+          'http://obamai.us-east-1.elasticbeanstalk.com'
         );
         const data = await response.json();
         if (data.message) {
