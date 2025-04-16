@@ -1,5 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
+<<<<<<< HEAD
+=======
+import axios from 'axios';
+>>>>>>> origin/master
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,8 +23,13 @@ const AuthPage = () => {
 
     try {
       const url = isLogin
+<<<<<<< HEAD
         ? 'http://fypobservabillity-env.eba-una3djfn.us-east-1.elasticbeanstalk.com/login/'
         : 'http://fypobservabillity-env.eba-una3djfn.us-east-1.elasticbeanstalk.com/register/';
+=======
+        ? 'http://obamai.us-east-1.elasticbeanstalk.com/api/v1/login'
+        : 'http://obamai.us-east-1.elasticbeanstalk.com/api/v1/register';
+>>>>>>> origin/master
 
       const payload = isLogin
         ? {
@@ -33,6 +42,7 @@ const AuthPage = () => {
             password: formData.password,
           };
 
+<<<<<<< HEAD
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -65,6 +75,40 @@ const AuthPage = () => {
     } catch (error) {
       setApiMessage({
         text: 'An error occurred. Please try again.',
+=======
+      const { data } = await axios.post(url, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      const token = data?.token || '';
+      console.log(token)
+      const status = data?.status || '';
+      const message = data?.message || 'Something happened';
+
+      if (!isLogin && status === 'ok') {
+        
+        setApiMessage({ text: message, type: 'success' });
+      } else {
+        setApiMessage({
+          text: message,
+          type: status === 'success' || status === 'ok' ? 'success' : 'error',
+        });
+      }
+
+      if (status === 'success' || status === 'ok') {
+        
+        
+        console.log('Operation successful:', data);
+        // Optional: redirect here
+      }
+    } catch (error) {
+      setApiMessage({
+        text:
+          error?.response?.data?.message ||
+          'An error occurred. Please try again.',
+>>>>>>> origin/master
         type: 'error',
       });
       console.error('API Error:', error);
@@ -74,6 +118,7 @@ const AuthPage = () => {
   };
 
   const handleInputChange = (e) => {
+<<<<<<< HEAD
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -82,12 +127,26 @@ const AuthPage = () => {
 
   const handleModeSwitch = () => {
     setIsLogin(!isLogin);
+=======
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleModeSwitch = () => {
+    setIsLogin((prev) => !prev);
+>>>>>>> origin/master
     setApiMessage({ text: '', type: '' });
     setFormData({ name: '', email: '', password: '', confirmPassword: '' });
   };
 
   const isPasswordMatch =
     isLogin || formData.password === formData.confirmPassword;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
   const isFormValid = isLogin
     ? formData.email && formData.password
     : formData.name &&
@@ -104,6 +163,10 @@ const AuthPage = () => {
           alt='Logo'
           className='w-40 h-auto mb-6 mr-auto'
         />
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
         {apiMessage.text && (
           <div
             className={`p-4 mb-4 text-center rounded-lg text-sm font-medium ${
