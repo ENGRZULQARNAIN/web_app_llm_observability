@@ -45,7 +45,7 @@ export function Header() {
         <div className="flex items-center mr-2">
         <img src={img} alt="" className="w-16 h-16" />
           <span className="text-[#8a3aff] font-bold text-lg">OBAM AI</span>
-          <span className="text-gray-500 text-xs ml-1">CONVERSATIONAL AGENT</span>
+          <span className="text-gray-500 text-xs ml-1">LLM OBSERVABILITY TOOL</span>
         </div>
       </div>
 
