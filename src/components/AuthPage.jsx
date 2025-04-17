@@ -23,13 +23,8 @@ const AuthPage = () => {
 
     try {
       const url = isLogin
-<<<<<<< HEAD
-        ? 'http://fypobservabillity-env.eba-una3djfn.us-east-1.elasticbeanstalk.com/login/'
-        : 'http://fypobservabillity-env.eba-una3djfn.us-east-1.elasticbeanstalk.com/register/';
-=======
         ? 'http://obamai.us-east-1.elasticbeanstalk.com/api/v1/login'
         : 'http://obamai.us-east-1.elasticbeanstalk.com/api/v1/register';
->>>>>>> origin/master
 
       const payload = isLogin
         ? {
@@ -42,40 +37,6 @@ const AuthPage = () => {
             password: formData.password,
           };
 
-<<<<<<< HEAD
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          accept: 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (!isLogin && data.status === 'ok') {
-        setApiMessage({
-          text: data.message,
-          type: 'success',
-        });
-      } else {
-        setApiMessage({
-          text: data.message,
-          type:
-            data.status === 'success' || data.status === 'ok'
-              ? 'success'
-              : 'error',
-        });
-      }
-
-      if (data.status === 'success' || data.status === 'ok') {
-        console.log('Operation successful:', data);
-      }
-    } catch (error) {
-      setApiMessage({
-        text: 'An error occurred. Please try again.',
-=======
       const { data } = await axios.post(url, payload, {
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +69,6 @@ const AuthPage = () => {
         text:
           error?.response?.data?.message ||
           'An error occurred. Please try again.',
->>>>>>> origin/master
         type: 'error',
       });
       console.error('API Error:', error);
@@ -118,16 +78,6 @@ const AuthPage = () => {
   };
 
   const handleInputChange = (e) => {
-<<<<<<< HEAD
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleModeSwitch = () => {
-    setIsLogin(!isLogin);
-=======
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -136,17 +86,12 @@ const AuthPage = () => {
 
   const handleModeSwitch = () => {
     setIsLogin((prev) => !prev);
->>>>>>> origin/master
     setApiMessage({ text: '', type: '' });
     setFormData({ name: '', email: '', password: '', confirmPassword: '' });
   };
 
   const isPasswordMatch =
     isLogin || formData.password === formData.confirmPassword;
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
   const isFormValid = isLogin
     ? formData.email && formData.password
     : formData.name &&
@@ -163,10 +108,6 @@ const AuthPage = () => {
           alt='Logo'
           className='w-40 h-auto mb-6 mr-auto'
         />
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
         {apiMessage.text && (
           <div
             className={`p-4 mb-4 text-center rounded-lg text-sm font-medium ${
