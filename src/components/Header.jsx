@@ -42,10 +42,15 @@ export function Header() {
       
       {/* Logo */}
       <div className="flex items-center">
-        <div className="flex items-center mr-2">
-        <img src={img} alt="" className="w-16 h-16" />
-          <span className="text-[#8a3aff] font-bold text-lg">OBAM AI</span>
-          <span className="text-gray-500 text-xs ml-1">LLM OBSERVABILITY TOOL</span>
+        <div className="flex items-center mr-4">
+          <img src={img} alt="OBAM AI Logo" className="w-12 h-12 object-contain" />
+          <div className="flex flex-col ml-2">
+            <div className="flex items-center">
+              <span className="text-[#8a3aff] font-bold text-2xl tracking-tight">OBAM AI</span>
+              <BsLightningChargeFill className="text-[#8a3aff] ml-1 w-5 h-5" />
+            </div>
+            <span className="text-gray-500 text-sm font-medium tracking-wide">LLM OBSERVABILITY TOOL</span>
+          </div>
         </div>
       </div>
 
