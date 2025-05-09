@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { MoreVertical, Plus, Edit, Trash2 } from "lucide-react";
 import CreateProjectModal from "./CreateProjectModal";
+import { useLocation } from 'react-router-dom';
 
-const ACCESS_TOKEN = "F30DFC";
+const getAccessToken = () => {
+  const token = localStorage.getItem('access_token') || '';
+  console.log("Current access_token:", token);
+  return token;
+};
 
 const Sidebar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,9 +16,22 @@ const Sidebar = () => {
   const [menuOpenId, setMenuOpenId] = useState(null);
   const [editModal, setEditModal] = useState({ open: false, project: null });
   const [deleteModal, setDeleteModal] = useState({ open: false, project: null, error: null });
+  const location = useLocation();
+  const [token, setToken] = useState(getAccessToken());
   const menuRef = React.useRef();
 
+  useEffect(() => {
+    setToken(getAccessToken());
+  }, [location]);
+
+  useEffect(() => {
+    if (token) {
+      fetchProjects();
+    }
+  }, [token]);
+
   const fetchProjects = async () => {
+    if (!token) return;
     try {
       const response = await fetch('http://obamai.us-east-1.elasticbeanstalk.com/api/v1/all-projects/', {
         method: 'POST',
@@ -22,7 +40,7 @@ const Sidebar = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          access_token: ACCESS_TOKEN
+          access_token: token
         })
       });
       const data = await response.json();
@@ -36,10 +54,6 @@ const Sidebar = () => {
       console.error('Error fetching projects:', error);
     }
   };
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
 
   useEffect(() => {
     if (menuOpenId === null) return;
@@ -85,7 +99,7 @@ const Sidebar = () => {
         benchmark_knowledge_id: "string",
       },
       token_data: {
-        access_token: ACCESS_TOKEN
+        access_token: token
       }
     };
     try {
@@ -123,7 +137,7 @@ const Sidebar = () => {
           'accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ access_token: ACCESS_TOKEN })
+        body: JSON.stringify({ access_token: token })
       });
       if (response.status === 200) {
         setDeleteModal({ open: false, project: null, error: null });

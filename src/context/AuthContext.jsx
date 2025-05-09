@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check for stored auth token on mount
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('access_token');
     if (token) {
       setUser({ token });
     }
@@ -22,19 +22,23 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await api.login(credentials);
-      if (response.status === 'ok') {
-        localStorage.setItem('authToken', response.token);
-        setUser({ token: response.token });
-        return { success: true };
+      console.log("API Login Response:", response);
+      
+      if (response.status === 'ok' && response.data && response.data.verification_token) {
+        const token = response.data.verification_token;
+        localStorage.setItem('access_token', token);
+        setUser({ token });
+        return { success: true, data: response.data };
       }
       return { success: false, message: response.message };
     } catch (error) {
+      console.error("Login error:", error);
       return { success: false, message: 'An error occurred during login' };
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('access_token');
     setUser(null);
   };
 
