@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { MoreVertical, Plus, Edit, Trash2 } from "lucide-react";
 import CreateProjectModal from "./CreateProjectModal";
 import { useLocation } from 'react-router-dom';
@@ -14,11 +15,13 @@ const Sidebar = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [menuOpenId, setMenuOpenId] = useState(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [editModal, setEditModal] = useState({ open: false, project: null });
   const [deleteModal, setDeleteModal] = useState({ open: false, project: null, error: null });
   const location = useLocation();
   const [token, setToken] = useState(getAccessToken());
-  const menuRef = React.useRef();
+  const menuRef = useRef();
+  const buttonRefs = useRef({});
 
   useEffect(() => {
     setToken(getAccessToken());
@@ -29,6 +32,24 @@ const Sidebar = () => {
       fetchProjects();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (menuOpenId === null) return;
+    
+    function handleClickOutside(event) {
+      const isButtonClick = buttonRefs.current[menuOpenId] && buttonRefs.current[menuOpenId].contains(event.target);
+      const isMenuClick = menuRef.current && menuRef.current.contains(event.target);
+      
+      if (!isButtonClick && !isMenuClick) {
+        setMenuOpenId(null);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpenId]);
 
   const fetchProjects = async () => {
     if (!token) return;
@@ -55,28 +76,25 @@ const Sidebar = () => {
     }
   };
 
-  useEffect(() => {
-    if (menuOpenId === null) return;
-    function handleClickOutside(event) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target)
-      ) {
-        setMenuOpenId(null);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [menuOpenId]);
-
   const handleProjectClick = (project) => {
     setSelectedProject(project);
   };
 
-  const handleMenuToggle = (projectId) => {
-    setMenuOpenId(menuOpenId === projectId ? null : projectId);
+  const handleMenuToggle = (projectId, e) => {
+    e.stopPropagation();
+    if (menuOpenId === projectId) {
+      setMenuOpenId(null);
+    } else {
+      setMenuOpenId(projectId);
+      const buttonRect = buttonRefs.current[projectId]?.getBoundingClientRect();
+      if (buttonRect) {
+        // Position to the left of the button
+        setMenuPosition({
+          top: buttonRect.top + window.scrollY,
+          left: buttonRect.left - 160 + window.scrollX,
+        });
+      }
+    }
   };
 
   const handleEdit = (project) => {
@@ -170,7 +188,6 @@ const Sidebar = () => {
           <div
             key={project.project_id}
             onClick={() => handleProjectClick(project)}
-            ref={menuOpenId === project.project_id ? menuRef : null}
             className={`group relative flex items-center justify-between gap-2 p-4 rounded-xl transition-all duration-300 cursor-pointer
               ${selectedProject?.project_id === project.project_id 
                 ? 'bg-white border-[#8a3aff] shadow-lg shadow-[#8a3aff]/10 scale-[1.02]' 
@@ -195,53 +212,12 @@ const Sidebar = () => {
               </div>
             </div>
             <button
+              ref={el => buttonRefs.current[project.project_id] = el}
               className="p-1.5 rounded-full hover:bg-[#f6f3ff] transition-colors duration-300"
-              onClick={e => {
-                e.stopPropagation();
-                handleMenuToggle(project.project_id);
-              }}
+              onClick={e => handleMenuToggle(project.project_id, e)}
             >
               <MoreVertical className="h-5 w-5 text-gray-400 group-hover:text-[#8a3aff] transition-colors duration-300" />
             </button>
-
-            {/* Dropdown menu */}
-            {menuOpenId === project.project_id && (
-              <div className="absolute right-2 top-14 z-20 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 flex flex-col gap-1 animate-fade-in">
-                <button
-                  className="flex items-center gap-2 px-4 py-2.5 hover:bg-[#f6f3ff] text-gray-700 rounded-md transition-colors duration-200"
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleEdit(project);
-                  }}
-                >
-                  <Edit className="h-4 w-4" /> Edit
-                </button>
-                <div className="flex items-center gap-2 px-4 py-2.5">
-                  <span className="text-gray-700">Make It active</span>
-                  <label className="ml-auto inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={project.is_active}
-                      onChange={e => {
-                        e.stopPropagation();
-                        handleToggleActive(project);
-                      }}
-                    />
-                    <div className="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#8a3aff] after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 after:shadow-md relative"></div>
-                  </label>
-                </div>
-                <button
-                  className="flex items-center gap-2 px-4 py-2.5 hover:bg-red-50 text-red-600 rounded-md transition-colors duration-200"
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDelete(project);
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" /> Delete
-                </button>
-              </div>
-            )}
           </div>
         ))}
 
@@ -258,6 +234,51 @@ const Sidebar = () => {
           </button>
         </div>
       </div>
+      
+      {/* Dropdown menu in portal */}
+      {menuOpenId && createPortal(
+        <div 
+          ref={menuRef}
+          className="fixed z-50 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 flex flex-col gap-1 animate-fade-in" 
+          style={{ top: `${menuPosition.top}px`, left: `${menuPosition.left}px` }}
+        >
+          <button
+            className="flex items-center gap-2 px-4 py-2.5 hover:bg-[#f6f3ff] text-gray-700 rounded-md transition-colors duration-200"
+            onClick={e => {
+              e.stopPropagation();
+              handleEdit(projects.find(p => p.project_id === menuOpenId));
+            }}
+          >
+            <Edit className="h-4 w-4" /> Edit
+          </button>
+          <div className="flex items-center gap-2 px-4 py-2.5">
+            <span className="text-gray-700">Make It active</span>
+            <label className="ml-auto inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={projects.find(p => p.project_id === menuOpenId)?.is_active}
+                onChange={e => {
+                  e.stopPropagation();
+                  handleToggleActive(projects.find(p => p.project_id === menuOpenId));
+                }}
+              />
+              <div className="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#8a3aff] after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 after:shadow-md relative"></div>
+            </label>
+          </div>
+          <button
+            className="flex items-center gap-2 px-4 py-2.5 hover:bg-red-50 text-red-600 rounded-md transition-colors duration-200"
+            onClick={e => {
+              e.stopPropagation();
+              handleDelete(projects.find(p => p.project_id === menuOpenId));
+            }}
+          >
+            <Trash2 className="h-4 w-4" /> Delete
+          </button>
+        </div>,
+        document.body
+      )}
+      
       {/* Modals */}
       {isModalOpen && <CreateProjectModal onClose={() => setIsModalOpen(false)} />}
       {editModal.open && (
