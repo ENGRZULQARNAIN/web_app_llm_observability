@@ -49,7 +49,7 @@ const DashboardLayout = ({ children }) => {
                     />
                     <span className="text-sm font-medium">{item.name}</span>
                     {isActive && (
-                      <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#8a3aff] rounded-full" />
+                      <div className="absolute bottom-0 left-0 w-full h-0.5  rounded-full" />
                     )}
                   </Link>
                 );
