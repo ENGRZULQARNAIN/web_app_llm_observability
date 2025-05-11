@@ -12,6 +12,8 @@ import RegisterPage from './pages/RegisterPage';
 import Forgotpassword from './pages/Forgotpassword';
 import DashboardPage from './pages/DashboardPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import LandingPage from './pages/LandingPage';
+import DemoPage from './pages/DemoPage';
 import { useAuth } from './context/AuthContext';
 import Verifyaccount from './pages/verification'
 
@@ -31,6 +33,8 @@ function App() {
       <Router>
         <Routes>
           {/* Public Routes */}
+          <Route path='/' element={<LandingPage />} />
+          <Route path='/demo' element={<DemoPage />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/forgotpassword' element={<Forgotpassword/>}/>
@@ -58,9 +62,6 @@ function App() {
               </PrivateRoute>
             }
           />
-         
-          {/* Redirect root to dashboard */}
-          <Route path='/' element={<Navigate to='/dashboard' replace />} />
         </Routes>
       </Router>
     </AuthProvider>
