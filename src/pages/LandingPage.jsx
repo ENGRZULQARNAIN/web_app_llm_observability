@@ -167,8 +167,8 @@ const LandingPage = () => {
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
           <div className="container mx-auto px-6 flex justify-between items-center">
             <div className="flex items-center">
-              <Logo size={40} />
-              <span className="text-xl font-bold ml-2 text-[#8a3aff]">Obam AI</span>
+              <Logo size={50} />
+              <span className="text-xl font-bold ml-2 text-[#8a3aff]">OBAM AI</span>
             </div>
             
             {/* Desktop Navigation */}
@@ -504,9 +504,9 @@ const LandingPage = () => {
               <div className="mb-6 md:mb-0">
                 <div className="flex items-center">
                   <Logo size={32} />
-                  <span className="text-lg font-bold ml-2 text-[#8a3aff]">Obam AI</span>
+                  <span className="text-lg font-bold ml-2 text-[#8a3aff]">OBAM AI</span>
                 </div>
-                <p className="text-gray-500 mt-2">© 2025 Obam AI. All rights reserved.</p>
+                <p className="text-gray-500 mt-2">© 2025 OBAM AI. All rights reserved.</p>
               </div>
               <div className="flex space-x-6">
                 <a href="#" className="text-gray-500 hover:text-[#8a3aff] transition">Privacy Policy</a>

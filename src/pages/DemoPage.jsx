@@ -14,8 +14,8 @@ const DemoPage = () => {
             Back to Home
           </Link>
           <div className="flex items-center">
-            <Logo size={32} />
-            <span className="text-lg font-bold ml-2 text-[#8a3aff]">Obam AI Demo</span>
+            <Logo size={45} />
+            <span className="text-lg font-bold ml-2 text-[#8a3aff]">OBAM AI Demo</span>
           </div>
         </div>
         <div>
@@ -32,7 +32,7 @@ const DemoPage = () => {
             width="100%" 
             height="100%" 
             src="https://www.youtube.com/embed/ZK-rNEhJIDs?autoplay=1&mute=1" 
-            title="Obam AI Product Demo" 
+            title="OBAM AI Product Demo" 
             frameBorder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
             allowFullScreen
@@ -53,10 +53,10 @@ const DemoPage = () => {
         <div className="container mx-auto px-6">
           <div className="flex justify-center items-center">
             <div className="flex items-center">
-              <Logo size={24} />
-              <span className="text-sm font-bold ml-2 text-[#8a3aff]">Obam AI</span>
+              <Logo size={35} />
+              <span className="text-sm font-bold ml-2 text-[#8a3aff]">OBAM AI</span>
             </div>
-            <p className="text-gray-500 ml-2 text-sm">© 2023 Obam AI. All rights reserved.</p>
+            <p className="text-gray-500 ml-2 text-sm">© 2025 OBAM AI. All rights reserved.</p>
           </div>
         </div>
       </footer>
