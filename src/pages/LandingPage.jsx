@@ -506,7 +506,7 @@ const LandingPage = () => {
                   <Logo size={32} />
                   <span className="text-lg font-bold ml-2 text-[#8a3aff]">Obam AI</span>
                 </div>
-                <p className="text-gray-500 mt-2">© 2024 Obam AI. All rights reserved.</p>
+                <p className="text-gray-500 mt-2">© 2025 Obam AI. All rights reserved.</p>
               </div>
               <div className="flex space-x-6">
                 <a href="#" className="text-gray-500 hover:text-[#8a3aff] transition">Privacy Policy</a>
