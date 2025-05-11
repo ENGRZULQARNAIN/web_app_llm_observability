@@ -1,11 +1,23 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BarChart2, Search, Shield, Zap, Globe, Database, ChartBar } from 'lucide-react';
+import { ArrowRight, BarChart2, Search, Shield, Zap, Globe, Database, ChartBar, Menu, X } from 'lucide-react';
 import Logo from '../assets/Logo';
 
 const LandingPage = () => {
   const networkCanvasRef = useRef(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Network animation effect
   useEffect(() => {
     if (!networkCanvasRef.current) return;
 
@@ -133,6 +145,14 @@ const LandingPage = () => {
     };
   }, []);
 
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+      setIsMenuOpen(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f6f3ff] to-[#f9f5ff] text-gray-800 overflow-hidden">
       {/* Network Animation Canvas */}
@@ -144,26 +164,95 @@ const LandingPage = () => {
       {/* Content */}
       <div className="relative z-10">
         {/* Navbar */}
-        <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <Logo size={40} />
-            <span className="text-xl font-bold ml-2 text-[#8a3aff]">Obam AI</span>
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
+          <div className="container mx-auto px-6 flex justify-between items-center">
+            <div className="flex items-center">
+              <Logo size={40} />
+              <span className="text-xl font-bold ml-2 text-[#8a3aff]">Obam AI</span>
+            </div>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <button 
+                onClick={() => scrollToSection('features')} 
+                className="hover:text-[#8a3aff] transition font-medium"
+              >
+                Features
+              </button>
+              <button 
+                onClick={() => scrollToSection('how-it-works')} 
+                className="hover:text-[#8a3aff] transition font-medium"
+              >
+                How It Works
+              </button>
+              <button 
+                onClick={() => scrollToSection('pricing')} 
+                className="hover:text-[#8a3aff] transition font-medium"
+              >
+                Pricing
+              </button>
+              <a 
+                href="/docs" 
+                className="hover:text-[#8a3aff] transition font-medium"
+              >
+                Documentation
+              </a>
+              <Link to="/login" className="hover:text-[#8a3aff] transition ml-4">Login</Link>
+              <Link to="/register" className="bg-[#8a3aff] hover:bg-[#7b2fff] px-4 py-2 rounded-lg transition text-white">
+                Sign Up
+              </Link>
+            </div>
+            
+            {/* Mobile Menu Button */}
+            <button 
+              className="md:hidden text-gray-700 focus:outline-none"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
-          <div className="hidden md:flex space-x-8">
-            <a href="#features" className="hover:text-[#8a3aff] transition">Features</a>
-            <a href="#how-it-works" className="hover:text-[#8a3aff] transition">How It Works</a>
-            <a href="#pricing" className="hover:text-[#8a3aff] transition">Pricing</a>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link to="/login" className="hover:text-[#8a3aff] transition">Login</Link>
-            <Link to="/register" className="bg-[#8a3aff] hover:bg-[#7b2fff] px-4 py-2 rounded-lg transition text-white">
-              Sign Up
-            </Link>
-          </div>
+          
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div className="md:hidden bg-white shadow-lg absolute w-full">
+              <div className="container mx-auto px-6 py-4 flex flex-col space-y-4">
+                <button 
+                  onClick={() => scrollToSection('features')} 
+                  className="text-left py-2 hover:text-[#8a3aff] transition font-medium"
+                >
+                  Features
+                </button>
+                <button 
+                  onClick={() => scrollToSection('how-it-works')} 
+                  className="text-left py-2 hover:text-[#8a3aff] transition font-medium"
+                >
+                  How It Works
+                </button>
+                <button 
+                  onClick={() => scrollToSection('pricing')} 
+                  className="text-left py-2 hover:text-[#8a3aff] transition font-medium"
+                >
+                  Pricing
+                </button>
+                <a 
+                  href="/docs" 
+                  className="text-left py-2 hover:text-[#8a3aff] transition font-medium"
+                >
+                  Documentation
+                </a>
+                <div className="flex flex-col space-y-2 pt-2 border-t border-gray-200">
+                  <Link to="/login" className="py-2 hover:text-[#8a3aff] transition">Login</Link>
+                  <Link to="/register" className="bg-[#8a3aff] hover:bg-[#7b2fff] px-4 py-2 rounded-lg text-center transition text-white">
+                    Sign Up
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </nav>
 
-        {/* Hero Section */}
-        <section className="container mx-auto px-6 py-20 text-center">
+        {/* Hero Section - Added margin-top to account for fixed navbar */}
+        <section className="container mx-auto px-6 pt-32 pb-20 text-center">
           <div className="animate-fade-in-up">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8a3aff] to-[#6023bf]">
@@ -277,6 +366,121 @@ const LandingPage = () => {
           </div>
         </section>
 
+        {/* Pricing Section */}
+        <section id="pricing" className="container mx-auto px-6 py-20">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6 text-gray-800">Pricing Plans</h2>
+          <p className="text-center text-gray-600 mb-16 max-w-2xl mx-auto">
+            Choose the perfect plan for your needs. Start free and scale as you grow.
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Free Tier */}
+            <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition duration-300 border border-gray-100">
+              <h3 className="text-xl font-bold mb-2">Free Tier</h3>
+              <p className="text-gray-500 mb-6">For individuals and small projects</p>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">$0</span>
+                <span className="text-gray-500">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Up to 1,000 requests/month</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Basic analytics dashboard</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>7-day data retention</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Community support</span>
+                </li>
+              </ul>
+              <Link to="/register" className="block text-center bg-[#f6f3ff] text-[#8a3aff] hover:bg-[#8a3aff] hover:text-white px-6 py-3 rounded-lg font-semibold transition duration-300">
+                Get Started
+              </Link>
+            </div>
+            
+            {/* Pro Tier */}
+            <div className="bg-[#8a3aff] p-8 rounded-xl shadow-md hover:shadow-xl transition duration-300 border-2 border-[#8a3aff] transform scale-105">
+              <div className="bg-white text-[#8a3aff] text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">MOST POPULAR</div>
+              <h3 className="text-xl font-bold mb-2 text-white">Pro</h3>
+              <p className="text-white opacity-80 mb-6">For growing teams and businesses</p>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-white">$49</span>
+                <span className="text-white opacity-80">/month</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-white">
+                <li className="flex items-start">
+                  <span className="mr-2">✓</span>
+                  <span>Up to 50,000 requests/month</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">✓</span>
+                  <span>Advanced analytics and reporting</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">✓</span>
+                  <span>30-day data retention</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">✓</span>
+                  <span>Email support</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2">✓</span>
+                  <span>Performance alerts</span>
+                </li>
+              </ul>
+              <Link to="/register" className="block text-center bg-white text-[#8a3aff] hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition duration-300">
+                Get Started
+              </Link>
+            </div>
+            
+            {/* Enterprise Tier */}
+            <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition duration-300 border border-gray-100">
+              <h3 className="text-xl font-bold mb-2">Enterprise</h3>
+              <p className="text-gray-500 mb-6">For large teams and organizations</p>
+              <div className="mb-6">
+                <span className="text-4xl font-bold">Custom</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Unlimited requests</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Custom analytics solutions</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Unlimited data retention</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Dedicated support manager</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>SLA guarantees</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-green-500 mr-2">✓</span>
+                  <span>Custom integrations</span>
+                </li>
+              </ul>
+              <Link to="/contact" className="block text-center bg-[#f6f3ff] text-[#8a3aff] hover:bg-[#8a3aff] hover:text-white px-6 py-3 rounded-lg font-semibold transition duration-300">
+                Contact Sales
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="container mx-auto px-6 py-20 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">Ready to Unlock the Full Potential of Your LLMs?</h2>
@@ -302,7 +506,7 @@ const LandingPage = () => {
                   <Logo size={32} />
                   <span className="text-lg font-bold ml-2 text-[#8a3aff]">Obam AI</span>
                 </div>
-                <p className="text-gray-500 mt-2">© 2023 Obam AI. All rights reserved.</p>
+                <p className="text-gray-500 mt-2">© 2024 Obam AI. All rights reserved.</p>
               </div>
               <div className="flex space-x-6">
                 <a href="#" className="text-gray-500 hover:text-[#8a3aff] transition">Privacy Policy</a>
