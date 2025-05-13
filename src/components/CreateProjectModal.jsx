@@ -6,7 +6,7 @@ const CreateProjectModal = ({ onClose, isEdit = false, initialData = {}, onSubmi
     projectName: "",
     testInterval: 0,
     baseUrl: "",
-    targetUrl: "",
+    endPoint: "",
     contentType: "",
     payloadBody: "",
     isActive: false,
@@ -17,8 +17,8 @@ const CreateProjectModal = ({ onClose, isEdit = false, initialData = {}, onSubmi
       setFormData({
         projectName: initialData.project_name || "",
         testInterval: initialData.test_interval_in_hrs || 0,
-        baseUrl: initialData.base_url || "",
-        targetUrl: initialData.target_url || "",
+        baseUrl: initialData.target_url || "",
+        endPoint: initialData.end_point || "",
         contentType: initialData.content_type || "",
         payloadBody: initialData.payload_body || "",
         isActive: initialData.is_active || false,
@@ -70,18 +70,18 @@ const CreateProjectModal = ({ onClose, isEdit = false, initialData = {}, onSubmi
           <input
             type="text"
             value={formData.baseUrl}
-            placeholder="BaseUrl"
+            placeholder="Base URL"
             onChange={(e) => updateField("baseUrl", e.target.value)}
             className="w-full mt-1 px-3 py-2 border rounded-md"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium">Target URL</label>
+          <label className="block text-sm font-medium">End Point</label>
           <input
             type="text"
-            value={formData.targetUrl}
-            placeholder="Target Url"
-            onChange={(e) => updateField("targetUrl", e.target.value)}
+            value={formData.endPoint}
+            placeholder="End Point"
+            onChange={(e) => updateField("endPoint", e.target.value)}
             className="w-full mt-1 px-3 py-2 border rounded-md"
           />
         </div>
