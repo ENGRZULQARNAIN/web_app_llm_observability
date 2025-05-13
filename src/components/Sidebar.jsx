@@ -18,6 +18,7 @@ const Sidebar = () => {
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [editModal, setEditModal] = useState({ open: false, project: null });
   const [deleteModal, setDeleteModal] = useState({ open: false, project: null, error: null });
+  const [activeProjectsCount, setActiveProjectsCount] = useState(0);
   const location = useLocation();
   const [token, setToken] = useState(getAccessToken());
   const menuRef = useRef();
@@ -32,6 +33,12 @@ const Sidebar = () => {
       fetchProjects();
     }
   }, [token]);
+  
+  // Update active projects count whenever projects change
+  useEffect(() => {
+    const activeCount = projects.filter(project => project.is_active).length;
+    setActiveProjectsCount(activeCount);
+  }, [projects]);
 
   useEffect(() => {
     if (menuOpenId === null) return;
@@ -40,6 +47,7 @@ const Sidebar = () => {
       const isButtonClick = buttonRefs.current[menuOpenId] && buttonRefs.current[menuOpenId].contains(event.target);
       const isMenuClick = menuRef.current && menuRef.current.contains(event.target);
       
+      // Don't close if clicking on the button or within the menu
       if (!isButtonClick && !isMenuClick) {
         setMenuOpenId(null);
       }
@@ -136,9 +144,56 @@ const Sidebar = () => {
     }
   };
 
-  const handleToggleActive = (project) => {
-    // Implement toggle active logic here
-    setMenuOpenId(null);
+  const handleToggleActive = async (project) => {
+    const newStatus = project.is_active ? 'deactivate' : 'activate';
+    
+    // Update locally for immediate UI feedback
+    setProjects(prevProjects => 
+      prevProjects.map(p => 
+        p.project_id === project.project_id 
+          ? {...p, is_active: !p.is_active} 
+          : p
+      )
+    );
+    
+    try {
+      const response = await fetch(
+        `http://obamai.us-east-1.elasticbeanstalk.com/api/v1/activate-project/${project.project_id}?status=${newStatus}`,
+        {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ access_token: token })
+        }
+      );
+      
+      if (response.ok) {
+        // Refresh projects to get the latest data from server
+        fetchProjects();
+      } else {
+        // Revert local change if API call failed
+        console.error('Failed to toggle project status');
+        setProjects(prevProjects => 
+          prevProjects.map(p => 
+            p.project_id === project.project_id 
+              ? {...p, is_active: !p.is_active} 
+              : p
+          )
+        );
+      }
+    } catch (error) {
+      // Revert local change if API call failed
+      console.error('Error toggling project status:', error);
+      setProjects(prevProjects => 
+        prevProjects.map(p => 
+          p.project_id === project.project_id 
+            ? {...p, is_active: !p.is_active} 
+            : p
+        )
+      );
+    }
   };
 
   const handleDelete = (project) => {
@@ -176,7 +231,7 @@ const Sidebar = () => {
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xl font-bold text-[#8a3aff] tracking-wide">Projects</h2>
           <span className="text-xs font-medium text-[#8a3aff] bg-[#8a3aff]/10 px-2 py-1 rounded-full">
-            {projects.length} Active
+            {activeProjectsCount} Active
           </span>
         </div>
         <div className="h-px bg-gradient-to-r from-[#8a3aff] to-transparent" />
@@ -251,19 +306,29 @@ const Sidebar = () => {
           >
             <Edit className="h-4 w-4" /> Edit
           </button>
-          <div className="flex items-center gap-2 px-4 py-2.5">
+          <div className="flex items-center gap-2 px-4 py-2.5 hover:bg-[#f6f3ff] transition-colors duration-200"
+               onClick={e => e.stopPropagation()}>
             <span className="text-gray-700">Make It active</span>
-            <label className="ml-auto inline-flex items-center cursor-pointer">
+            <label 
+              className="ml-auto inline-flex items-center cursor-pointer"
+              onClick={e => e.stopPropagation()}
+            >
               <input
                 type="checkbox"
                 className="sr-only peer"
                 checked={projects.find(p => p.project_id === menuOpenId)?.is_active}
                 onChange={e => {
                   e.stopPropagation();
-                  handleToggleActive(projects.find(p => p.project_id === menuOpenId));
+                  const project = projects.find(p => p.project_id === menuOpenId);
+                  if (project) {
+                    handleToggleActive(project);
+                  }
                 }}
               />
-              <div className="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#8a3aff] after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 after:shadow-md relative"></div>
+              <div 
+                className="w-9 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#8a3aff] after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 after:shadow-md relative"
+                onClick={e => e.stopPropagation()}
+              ></div>
             </label>
           </div>
           <button
