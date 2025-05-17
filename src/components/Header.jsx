@@ -5,8 +5,12 @@ import { FiEdit } from "react-icons/fi";
 import Toggle from '../../src/components/ui/Togglebutton'
 import { BsLightningChargeFill } from "react-icons/bs";
 import img from '../pages/logo.png'
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export function Header() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -36,6 +40,15 @@ export function Header() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  // Get user name from localStorage or use default
+  const userName = user?.name || 'User';
+  const userEmail = user?.email || 'user@example.com';
 
   return (
     <header className="flex items-center justify-between px-2  border-b border-gray-200">
@@ -127,29 +140,34 @@ export function Header() {
               setShowNotifications(false);
               setShowHelpPanel(false);
             }}
-            className="h-8 w-8 rounded-full overflow-hidden border-2 border-gray-300"
+            className="h-8 w-8 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-600"
           >
-            <FaUser className="text-center mx-auto" />
+            <FaUser className="h-4 w-4" />
           </button>
 
           {/* User Menu */}
           {showUserMenu && (
             <div className="absolute z-10 right-0 mt-2 w-48 bg-white shadow-lg rounded-md p-3">
               <div className="flex items-center gap-2">
-                <FaUser />
+                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                  <FaUser className="h-4 w-4 text-gray-600" />
+                </div>
                 <div>
-                  <h3 className="text-sm font-semibold">Olivia Rye</h3>
-                  <p className="text-xs text-gray-500">olivia@untitled.ai</p>
+                  <h3 className="text-sm font-semibold">{userName}</h3>
+                  <p className="text-xs text-gray-500">{userEmail}</p>
                 </div>
               </div>
               <div className="mt-3">
-                <button className="block w-full text-left px-3 py-2 hover:bg-gray-100 text-sm">
+                <Link to="/profile" className="block w-full text-left px-3 py-2 hover:bg-gray-100 text-sm rounded-md">
                   View profile
-                </button>
-                <button className="block w-full text-left px-3 py-2 hover:bg-gray-100 text-sm">
+                </Link>
+                <Link to="/profile" className="block w-full text-left px-3 py-2 hover:bg-gray-100 text-sm rounded-md">
                   Settings
-                </button>
-                <button className="block w-full text-left px-3 py-2 hover:bg-gray-100 text-sm">
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-2 hover:bg-gray-100 text-sm rounded-md text-red-600 hover:text-red-700"
+                >
                   Log out
                 </button>
               </div>

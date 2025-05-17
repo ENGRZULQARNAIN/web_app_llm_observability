@@ -15,6 +15,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import LandingPage from './pages/LandingPage';
 import DemoPage from './pages/DemoPage';
 import ContactPage from './pages/ContactPage';
+import ProfilePage from './pages/ProfilePage';
 import { useAuth } from './context/AuthContext';
 import Verifyaccount from './pages/verification'
 
@@ -60,6 +61,17 @@ function App() {
               <PrivateRoute>
                 <DashboardLayout>
                   <AnalyticsPage />
+                </DashboardLayout>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path='/profile'
+            element={
+              <PrivateRoute>
+                <DashboardLayout>
+                  <ProfilePage />
                 </DashboardLayout>
               </PrivateRoute>
             }

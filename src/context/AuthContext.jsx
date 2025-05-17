@@ -11,10 +11,16 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored auth token on mount
+    // Check for stored auth token and user data on mount
     const token = localStorage.getItem('access_token');
+    const userData = localStorage.getItem('user_data');
+    
     if (token) {
-      setUser({ token });
+      if (userData) {
+        setUser({ token, ...JSON.parse(userData) });
+      } else {
+        setUser({ token });
+      }
     }
     setLoading(false);
   }, []);
@@ -27,7 +33,16 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 'ok' && response.data && response.data.verification_token) {
         const token = response.data.verification_token;
         localStorage.setItem('access_token', token);
-        setUser({ token });
+        
+        // Store user data in localStorage
+        const userData = {
+          email: credentials.email,
+          name: response.data.name || credentials.email.split('@')[0], // Use name from response or fallback to username from email
+          userId: response.data.user_id || '',
+        };
+        
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        setUser({ token, ...userData });
         return { success: true, data: response.data };
       }
       return { success: false, message: response.message };
@@ -38,8 +53,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    // Clear all localStorage data
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user_data');
+    localStorage.removeItem('selectedProject');
     setUser(null);
+  };
+
+  const updateUserProfile = (updatedData) => {
+    if (user) {
+      const updatedUser = { ...user, ...updatedData };
+      localStorage.setItem('user_data', JSON.stringify({
+        email: updatedUser.email,
+        name: updatedUser.name,
+        userId: updatedUser.userId,
+      }));
+      setUser(updatedUser);
+    }
   };
 
   const value = {
@@ -47,6 +77,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     logout,
+    updateUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
