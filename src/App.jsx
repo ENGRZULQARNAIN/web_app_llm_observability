@@ -14,6 +14,7 @@ import DashboardPage from './pages/DashboardPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import LandingPage from './pages/LandingPage';
 import DemoPage from './pages/DemoPage';
+import ContactPage from './pages/ContactPage';
 import { useAuth } from './context/AuthContext';
 import Verifyaccount from './pages/verification'
 
@@ -35,6 +36,7 @@ function App() {
           {/* Public Routes */}
           <Route path='/' element={<LandingPage />} />
           <Route path='/demo' element={<DemoPage />} />
+          <Route path='/contact' element={<ContactPage />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/forgotpassword' element={<Forgotpassword/>}/>
