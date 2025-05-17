@@ -2,70 +2,24 @@ import React, { useState } from 'react';
 import Bargraph from '../Graphs/Bargraph';
 import Linegraph from '../Graphs/Linegraph';
 import MetricCard from "../components/cards/MetricCard";
-import { DownloadCloud, Calendar, BarChart2, LineChart, ArrowDown, ArrowUp, Filter, RefreshCw } from 'lucide-react';
+import { BarChart2, LineChart, ArrowDown, ArrowUp, RefreshCw } from 'lucide-react';
 
 function AnalyticsPage() {
   const [selectedChart, setSelectedChart] = useState('bar');
-  const [timeframe, setTimeframe] = useState('week');
+  const [metricType, setMetricType] = useState('hallucination');
 
   return (
     <div className="min-h-screen bg-gray-50 pb-10 space-y-6">
-      {/* Header with filters */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Analytics</h1>
-          <p className="text-gray-500">Insights and performance metrics</p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="flex items-center space-x-1 bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <button 
-              className={`px-3 py-2 text-sm font-medium ${timeframe === 'day' ? 'bg-[#8a3aff]/10 text-[#8a3aff]' : 'text-gray-600 hover:bg-gray-50'}`}
-              onClick={() => setTimeframe('day')}
-            >
-              Day
-            </button>
-            <button 
-              className={`px-3 py-2 text-sm font-medium ${timeframe === 'week' ? 'bg-[#8a3aff]/10 text-[#8a3aff]' : 'text-gray-600 hover:bg-gray-50'}`}
-              onClick={() => setTimeframe('week')}
-            >
-              Week
-            </button>
-            <button 
-              className={`px-3 py-2 text-sm font-medium ${timeframe === 'month' ? 'bg-[#8a3aff]/10 text-[#8a3aff]' : 'text-gray-600 hover:bg-gray-50'}`}
-              onClick={() => setTimeframe('month')}
-            >
-              Month
-            </button>
-          </div>
-
-          <button className="px-4 py-2 text-sm bg-white border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-all duration-300">
-            <Calendar className="h-4 w-4" /> 
-            Date Range
-          </button>
-          
-          <button className="px-4 py-2 text-sm bg-white border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-all duration-300">
-            <Filter className="h-4 w-4" /> 
-            Filter
-          </button>
-          
-          <button className="px-4 py-2 text-sm bg-white border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-all duration-300">
-            <DownloadCloud className="h-4 w-4" /> 
-            Export
-          </button>
+          <p className="text-gray-500">LLM Performance Monitoring</p>
         </div>
       </div>
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard 
-          label="Benchmark Data" 
-          value="Uni Bot Data" 
-          icon="activity"
-          trend={true}
-          percentage={12}
-          trendType="positive"
-        />
         <MetricCard 
           label="Total Tests" 
           value="1,247" 
@@ -75,27 +29,48 @@ function AnalyticsPage() {
           trendType="positive"
         />
         <MetricCard 
-          label="Avg. Hallucination" 
-          value="5.5" 
+          label="Easy Hallucination Rate" 
+          value="2.1%" 
+          icon="alert"
+          trend={true}
+          percentage={1.5}
+          trendType="negative"
+        />
+        <MetricCard 
+          label="Medium Hallucination Rate" 
+          value="4.5%" 
           icon="alert"
           trend={true}
           percentage={3.2}
           trendType="negative"
         />
         <MetricCard 
-          label="Avg. Relevance" 
-          value="6.5" 
-          icon="success"
+          label="Hard Hallucination Rate" 
+          value="7.8%" 
+          icon="alert"
           trend={true}
-          percentage={8.1}
+          percentage={2.4}
           trendType="positive"
         />
       </div>
 
-      {/* Key metrics highlight */}
+      {/* Performance Metric Toggle */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Performance Trends</h2>
+          <div className="flex items-center space-x-2">
+            <button 
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${metricType === 'hallucination' ? 'bg-[#8a3aff]/10 text-[#8a3aff]' : 'text-gray-600 hover:bg-gray-50'}`}
+              onClick={() => setMetricType('hallucination')}
+            >
+              Hallucination
+            </button>
+            <button 
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${metricType === 'helpfulness' ? 'bg-[#8a3aff]/10 text-[#8a3aff]' : 'text-gray-600 hover:bg-gray-50'}`}
+              onClick={() => setMetricType('helpfulness')}
+            >
+              Helpfulness
+            </button>
+          </div>
           <div className="flex items-center space-x-2">
             <button 
               className={`p-2 rounded-lg ${selectedChart === 'bar' ? 'bg-[#8a3aff]/10 text-[#8a3aff]' : 'text-gray-400 hover:bg-gray-100'}`}
@@ -120,94 +95,75 @@ function AnalyticsPage() {
             <div className="space-y-6">
               <div>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium text-gray-500">Match Rate</h3>
-                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-xs font-medium">
-                    <ArrowUp className="h-3 w-3" /> 12%
-                  </div>
+                  <h3 className="text-sm font-medium text-gray-500">Easy Difficulty</h3>
+                  {metricType === 'hallucination' ? (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-xs font-medium">
+                      <ArrowDown className="h-3 w-3" /> 2.1%
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-xs font-medium">
+                      <ArrowUp className="h-3 w-3" /> 8.9/10
+                    </div>
+                  )}
                 </div>
-                <p className="text-2xl font-bold text-gray-800">76.4%</p>
+                <p className="text-2xl font-bold text-gray-800">{metricType === 'hallucination' ? '2.1%' : '8.9/10'}</p>
               </div>
               
               <div>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium text-gray-500">Relevance Score</h3>
-                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-xs font-medium">
-                    <ArrowUp className="h-3 w-3" /> 5%
-                  </div>
+                  <h3 className="text-sm font-medium text-gray-500">Medium Difficulty</h3>
+                  {metricType === 'hallucination' ? (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-600 text-xs font-medium">
+                      <ArrowDown className="h-3 w-3" /> 4.5%
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-xs font-medium">
+                      <ArrowUp className="h-3 w-3" /> 7.5/10
+                    </div>
+                  )}
                 </div>
-                <p className="text-2xl font-bold text-gray-800">8.2/10</p>
+                <p className="text-2xl font-bold text-gray-800">{metricType === 'hallucination' ? '4.5%' : '7.5/10'}</p>
               </div>
               
               <div>
                 <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium text-gray-500">Hallucination Rate</h3>
-                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 text-red-600 text-xs font-medium">
-                    <ArrowDown className="h-3 w-3" /> 3%
-                  </div>
+                  <h3 className="text-sm font-medium text-gray-500">Hard Difficulty</h3>
+                  {metricType === 'hallucination' ? (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 text-red-600 text-xs font-medium">
+                      <ArrowDown className="h-3 w-3" /> 7.8%
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-600 text-xs font-medium">
+                      <ArrowUp className="h-3 w-3" /> 6.2/10
+                    </div>
+                  )}
                 </div>
-                <p className="text-2xl font-bold text-gray-800">4.2%</p>
+                <p className="text-2xl font-bold text-gray-800">{metricType === 'hallucination' ? '7.8%' : '6.2/10'}</p>
               </div>
             </div>
           </div>
           
           <div className="col-span-3 min-h-[300px]">
             {selectedChart === 'bar' ? (
-              <Bargraph />
+              <Bargraph metricType={metricType} />
             ) : (
-              <Linegraph />
+              <Linegraph metricType={metricType} />
             )}
           </div>
         </div>
       </div>
 
-      {/* Additional charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Question Categories</h2>
-          <Bargraph />
-        </div>
-        
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Performance Over Time</h2>
-          <Linegraph />
-        </div>
-      </div>
-      
-      {/* Comparative analysis */}
+      {/* Performance over time */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Benchmark Comparison</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="border border-gray-100 rounded-lg p-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-sm font-medium text-gray-500">Current Model</h3>
-              <div className="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-full">Active</div>
-            </div>
-            <p className="text-2xl font-bold text-gray-800 mb-2">76.4%</p>
-            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-              <div className="h-full bg-[#8a3aff] rounded-full" style={{ width: '76.4%' }}></div>
-            </div>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Performance Over Time</h2>
+        <div className="grid grid-cols-1 gap-6">
+          <div>
+            <h3 className="text-md font-medium text-gray-700 mb-2">Hallucination Rate Trends</h3>
+            <Linegraph metricType="hallucination" />
           </div>
-          
-          <div className="border border-gray-100 rounded-lg p-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-sm font-medium text-gray-500">Previous Version</h3>
-              <div className="px-2 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full">Inactive</div>
-            </div>
-            <p className="text-2xl font-bold text-gray-800 mb-2">68.2%</p>
-            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-              <div className="h-full bg-gray-400 rounded-full" style={{ width: '68.2%' }}></div>
-            </div>
-          </div>
-          
-          <div className="border border-gray-100 rounded-lg p-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-sm font-medium text-gray-500">Industry Avg.</h3>
-              <div className="px-2 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-full">Benchmark</div>
-            </div>
-            <p className="text-2xl font-bold text-gray-800 mb-2">72.1%</p>
-            <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-              <div className="h-full bg-yellow-400 rounded-full" style={{ width: '72.1%' }}></div>
-            </div>
+          <div>
+            <h3 className="text-md font-medium text-gray-700 mb-2">Helpfulness Score Trends</h3>
+            <Linegraph metricType="helpfulness" />
           </div>
         </div>
       </div>

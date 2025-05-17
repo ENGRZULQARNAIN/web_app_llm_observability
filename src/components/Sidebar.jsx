@@ -60,6 +60,13 @@ const Sidebar = () => {
     };
   }, [menuOpenId]);
 
+  // Save selected project to localStorage whenever it changes
+  useEffect(() => {
+    if (selectedProject) {
+      localStorage.setItem('selectedProject', JSON.stringify(selectedProject));
+    }
+  }, [selectedProject]);
+
   const fetchProjects = async () => {
     if (!token) return;
     try {
@@ -87,6 +94,12 @@ const Sidebar = () => {
 
   const handleProjectClick = (project) => {
     setSelectedProject(project);
+    // Dispatch a custom event to notify other components about the change
+    const event = new StorageEvent('storage', {
+      key: 'selectedProject',
+      newValue: JSON.stringify(project)
+    });
+    window.dispatchEvent(event);
   };
 
   const handleMenuToggle = (projectId, e) => {
