@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Activity, Clock, AlertCircle, CheckCircle, SearchIcon, ChevronLeft, ChevronRight, ArrowUpDown, Flag } from "lucide-react";
 import MetricCard from "../components/cards/MetricCard";
+import { api } from "../services/api";
 
 // This assumes you have some context or state management to access the selected project
 // A real implementation would use Context API, Redux, or another state management solution
@@ -11,6 +12,10 @@ export default function Dashboard() {
   // In a real implementation, you would get this from context/props/state management
   // This is a simulation of getting the selected project from the Sidebar
   const [sidebarSelectedProject, setSidebarSelectedProject] = useState(null);
+  
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loadingDashboard, setLoadingDashboard] = useState(false);
+  const [dashboardError, setDashboardError] = useState(null);
   
   // Fetch the selected project from the sidebar on component mount and when it changes
   useEffect(() => {
@@ -43,6 +48,23 @@ export default function Dashboard() {
     };
   }, []);
   
+  useEffect(() => {
+    if (sidebarSelectedProject && sidebarSelectedProject.project_id) {
+      setLoadingDashboard(true);
+      setDashboardError(null);
+      api.getDashboardData(sidebarSelectedProject.project_id)
+        .then((res) => {
+          setDashboardData(res.data);
+        })
+        .catch((err) => {
+          setDashboardError("Failed to load dashboard data");
+        })
+        .finally(() => setLoadingDashboard(false));
+    } else {
+      setDashboardData(null);
+    }
+  }, [sidebarSelectedProject]);
+  
   // If no project is selected in sidebar, show a default name
   const projectName = sidebarSelectedProject?.project_name || "No Project Selected";
 
@@ -60,32 +82,23 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <MetricCard 
           label="Benchmark Data" 
-          value="Uni Bot Data" 
+          value={dashboardData ? dashboardData.bench_mark_data_title : "-"}
           icon="activity"
-          trend={true}
-          percentage={12}
-          trendType="positive"
         />
         <MetricCard 
           label="Last Run" 
-          value="9 pm" 
+          value={dashboardData ? formatTime(dashboardData.last_run) : "-"}
           icon="time"
         />
         <MetricCard 
           label="Avg. Hallucination" 
-          value="5.5" 
+          value={dashboardData ? dashboardData.avg_hallucination_score : "-"}
           icon="alert"
-          trend={true}
-          percentage={3.2}
-          trendType="negative"
         />
         <MetricCard 
-          label="Avg. Relevance" 
-          value="6.5" 
+          label="Avg. Helpfulness" 
+          value={dashboardData ? dashboardData.avg_helpfulness : "-"}
           icon="success"
-          trend={true}
-          percentage={8.1}
-          trendType="positive"
         />
         <MetricCard 
           label="Total Questions" 
@@ -145,11 +158,6 @@ export default function Dashboard() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                       <div className="flex items-center gap-1 cursor-pointer hover:text-[#8a3aff]">
                         Query <ArrowUpDown size={14} />
-                      </div>
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                      <div className="flex items-center gap-1 cursor-pointer hover:text-[#8a3aff]">
-                        {projectName} Response <ArrowUpDown size={14} />
                       </div>
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
@@ -284,4 +292,12 @@ function TableRow({ query, projectResponse, referenceAnswer, difficulty, flag })
       </td>
     </tr>
   );
+}
+
+function formatTime(dateString) {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  if (isNaN(date)) return "-";
+  // Format as e.g. '2:30 PM' or '2025-06-19 14:17' as needed
+  return date.toLocaleString();
 }

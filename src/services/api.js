@@ -25,4 +25,14 @@ export const api = {
     });
     return response.json();
   },
+
+  getDashboardData: async (projectId) => {
+    const response = await fetch(`${API_BASE_URL}/api/v1/get-dashboard-data/${projectId}`, {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+      },
+    });
+    return response.json();
+  },
 };
