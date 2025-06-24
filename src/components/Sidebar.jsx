@@ -293,7 +293,7 @@ const Sidebar = () => {
                   }`}>
                     {project.project_name}
                   </span>
-                  <span className="text-xs text-gray-500 truncate">
+                  <span className="text-xs text-gray-500 truncate overflow-hidden whitespace-nowrap max-w-[120px]">
                     {project.target_url || 'No URL set'}
                   </span>
                 </div>

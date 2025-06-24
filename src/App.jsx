@@ -18,6 +18,7 @@ import ContactPage from './pages/ContactPage';
 import ProfilePage from './pages/ProfilePage';
 import { useAuth } from './context/AuthContext';
 import Verifyaccount from './pages/verification'
+import AdminPage from './pages/AdminPage';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -42,6 +43,9 @@ function App() {
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/forgotpassword' element={<Forgotpassword/>}/>
           <Route path='verification' element={<Verifyaccount/>}/>
+
+          {/* Admin Route */}
+          <Route path='/admin' element={<AdminPage />} />
 
           {/* Protected Routes */}
           <Route
